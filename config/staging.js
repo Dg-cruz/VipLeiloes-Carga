@@ -1,4 +1,2 @@
-export const config = {
-  baseUrl: 'https://api.staging.vipleiloes.com',
-  headers: { 'Content-Type': 'application/json' }
-};
+export const baseURL = 'https://hom-frontend.vipleiloes.com.br/';
+export const headers = { 'Content-Type': 'application/json' };

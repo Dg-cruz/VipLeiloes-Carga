@@ -1,16 +1,20 @@
-// Verifica se o sistema básico está funcionando — execução curta, com poucos usuários.
+// Simula aumento rápido e inesperado de usuários, ideal para eventos tipo Black Friday.
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { baseURL } from '../config/staging.js'; // importa a URL base da pasta config
 
 export let options = {
-  vus: 1,
-  duration: '30s',
+  stages: [
+    { duration: '10s', target: 10 },
+    { duration: '10s', target: 100 },
+    { duration: '30s', target: 100 },
+    { duration: '10s', target: 10 },
+    { duration: '10s', target: 0 },
+  ],
   thresholds: {
-    http_req_failed: ['rate<0.01'], // Falha < 1%
-    http_req_duration: ['p(95)<500'], // 95% abaixo de 500ms
+    http_req_duration: ['p(95)<1200'],
   },
-  tags: { test_type: 'smoke' }
+  tags: { test_type: 'spike' }
 };
 
 export default function () {

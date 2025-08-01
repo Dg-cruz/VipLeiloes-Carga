@@ -1,7 +1,7 @@
+// Aumenta gradualmente o número de usuários para descobrir o ponto de quebra.
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { config } from '../config/prod.js';
-import { login } from '../modules/auth.js';
+import { baseURL } from '../config/staging.js'; // importa a URL base da pasta config
 
 export let options = {
   stages: [
@@ -9,13 +9,19 @@ export let options = {
     { duration: '1m', target: 100 },
     { duration: '30s', target: 0 }
   ],
-  thresholds: { http_req_duration: ['p(95)<1000'] },
+  thresholds: {
+    http_req_duration: ['p(95)<1000'],
+  },
   tags: { test_type: 'stress' }
 };
 
 export default function () {
-  const token = login();
-  const res = http.get(\`\${config.baseUrl}/users\`, { headers: { Authorization: \`Bearer \${token}\` } });
-  check(res, { 'status é 200': (r) => r.status === 200 });
-  sleep(1);
+  const res = http.get(baseURL);
+
+  check(res, {
+    'status é 200': (r) => r.status === 200,
+    'tempo de resposta < 4s': (r) => r.timings.duration < 4000,
+  });
+
+  sleep(1); // pausa entre requisições
 }

@@ -1,16 +1,16 @@
-// Verifica se o sistema básico está funcionando — execução curta, com poucos usuários.
+// Testa performance estável ao longo do tempo (detecta vazamentos de memória, por exemplo).
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { baseURL } from '../config/staging.js'; // importa a URL base da pasta config
 
 export let options = {
-  vus: 1,
-  duration: '30s',
+  vus: 20,
+  duration: '30m',
   thresholds: {
-    http_req_failed: ['rate<0.01'], // Falha < 1%
-    http_req_duration: ['p(95)<500'], // 95% abaixo de 500ms
+    http_req_failed: ['rate<0.01'],
+    http_req_duration: ['p(95)<1000'],
   },
-  tags: { test_type: 'smoke' }
+  tags: { test_type: 'soak' }
 };
 
 export default function () {
