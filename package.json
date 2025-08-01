@@ -1,0 +1,11 @@
+{
+  "name": "vipleiloesqa",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "smoke": "k6 run scripts/smoke.js",
+    "load": "k6 run scripts/load.js",
+    "stress": "k6 run scripts/stress.js"
+  },
+  "dependencies": {}
+}
