@@ -39,11 +39,12 @@ Cada script em `scripts/` implementa um desses cenários, podendo ser customizad
 2. (Opcional) Instale as dependências:  
    `npm install`
 3. Execute os testes desejados:
-   - Smoke: `npm run smoke`
-   - Load: `npm run load`
-   - Stress: `npm run stress`
-   - Soak: `npm run soak`
-   - Spike: `npm run spike`
+   - Smoke: `k6 run scripts/smoke.js`
+   - Load: `k6 run scripts/load.js`
+   - Stress: `k6 run scripts/stress.js`
+   - Soak: `k6 run scripts/soak.js`
+   - Spike: `k6 run scripts/spike.js`
+   - Backoffice: `k6 run scripts/backoffice-test.js`
 
 Os resultados dos testes são exibidos no terminal e podem ser integrados a relatórios para acompanhamento contínuo da qualidade da plataforma.
 

@@ -191,7 +191,7 @@ export function setup() {
 // Função principal executada para cada VU
 export default function(data) {
   // Verificar se temos cookies válidos
-  if (!data || !data.cookieString) {
+  if (!data?.cookieString) {
     console.error('Cookies de sessão inválidos. Abortando teste.');
     errorRate.add(1);
     return;
