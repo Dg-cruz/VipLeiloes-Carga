@@ -1,7 +1,7 @@
 // Simula aumento rápido e inesperado de usuários, ideal para eventos tipo Black Friday.
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { baseURL } from '../config/staging.js'; // importa a URL base da pasta config
+import { baseURL } from '../config/evento_multiplo.js'; // importa a URL base da pasta config
 
 export let options = {
   stages: [

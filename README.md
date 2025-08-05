@@ -26,7 +26,7 @@ O projeto contempla os principais tipos de teste de carga:
   Eleva gradualmente o número de usuários e requisições até ultrapassar a capacidade esperada do sistema, com o objetivo de identificar o ponto de falha, gargalos e como o sistema se recupera após sobrecarga.
 
 - **Soak Test**  
-  Mantém uma carga constante por um longo período para verificar a estabilidade do sistema ao longo do tempo, identificando possíveis vazamentos de memória, degradação de performance ou falhas intermitentes.
+  Mantém o sistema sob carga por um longo período para identificar problemas de estabilidade, vazamento de memória ou degradação de performance ao longo do tempo.
 
 - **Spike Test**  
   Aplica aumentos repentinos e curtos de carga para avaliar como o sistema lida com picos inesperados de acesso e se consegue retornar ao estado normal rapidamente.
@@ -46,3 +46,49 @@ Cada script em `scripts/` implementa um desses cenários, podendo ser customizad
    - Spike: `npm run spike`
 
 Os resultados dos testes são exibidos no terminal e podem ser integrados a relatórios para acompanhamento contínuo da qualidade da plataforma.
+
+## Métricas de Teste de Carga
+
+Durante a execução dos testes de carga, diversas métricas são coletadas para avaliar o desempenho e a estabilidade do sistema. Abaixo estão as principais métricas e o significado de cada valor apresentado nos resultados:
+
+- **http_req_duration**  
+  Mede o tempo total (em milissegundos) que cada requisição HTTP leva para ser concluída, incluindo DNS, conexão, espera e download da resposta.  
+  - **avg**: tempo médio das requisições.
+  - **min**: menor tempo registrado.
+  - **med**: valor mediano (50% das requisições foram mais rápidas, 50% mais lentas).
+  - **max**: maior tempo registrado.
+  - **p(95)**: 95% das requisições foram concluídas em menos que esse valor.
+
+- **http_req_failed**  
+  Taxa de requisições HTTP que falharam (por erro de rede, status HTTP >= 400, etc).  
+  - **rate**: percentual de falhas em relação ao total de requisições.
+
+- **iteration_duration**  
+  Mede o tempo total de execução de cada iteração do teste (do início ao fim de uma execução do script para um usuário virtual).  
+  - **avg**: tempo médio de cada iteração.
+  - **min**: menor tempo de iteração.
+  - **med**: tempo mediano de iteração.
+  - **max**: maior tempo de iteração.
+
+- **errors**  
+  Métrica personalizada para contabilizar erros específicos do fluxo de teste, definidos manualmente no script.  
+  - **rate**: percentual de execuções com erro.
+
+- **operador_update_duration**  
+  Métrica personalizada para medir o tempo de atualização de uma operação específica (exemplo: atualização de tela do operador).  
+  - **avg**: tempo médio das atualizações.
+  - **min**: menor tempo registrado.
+  - **med**: tempo mediano.
+  - **max**: maior tempo registrado.
+  - **p(95)**: 95% das atualizações foram concluídas em menos que esse valor.
+
+### Significado das Siglas
+
+- **avg**: valor médio (average)
+- **min**: valor mínimo (minimum)
+- **med**: valor mediano (median)
+- **max**: valor máximo (maximum)
+- **p(95)**: percentil 95 (95% dos valores estão abaixo deste valor)
+- **rate**: taxa ou percentual
+
+Essas métricas permitem identificar gargalos, lentidão, instabilidades e pontos de melhoria no sistema testado, garantindo que ele atenda aos requisitos de desempenho e confiabilidade

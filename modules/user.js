@@ -1,7 +1,10 @@
 import http from 'k6/http';
-import { config } from '../config/dev.js';
+import { baseURL, headers } from '../config/dev.js';
 
 export function createUser(userData) {
-  const res = http.post(\`\${config.baseUrl}/users\`, JSON.stringify(userData), { headers: config.headers });
+  const url = \`\${baseURL}/users\`;
+  const payload = JSON.stringify(userData);
+  const params = { headers };
+  const res = http.post(url, payload, params);
   return res;
 }

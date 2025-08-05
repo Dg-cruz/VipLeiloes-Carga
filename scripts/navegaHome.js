@@ -1,6 +1,6 @@
-import {browser} from 'k6/browser';
-import {check} from 'k6';
-import {Rate} from 'k6/metrics';
+import { browser } from 'k6/browser'; // Importa o módulo browser do k6
+import { check, sleep, group } from 'k6';
+import { Rate, Trend } from 'k6/metrics';
 
 const errorRate = new Rate('errors');
 const connectionFailures = new Rate('connection_failures');
@@ -36,6 +36,7 @@ export const options = {
 };
 
 export default async function(){
+  // Cria um novo contexto de navegador
   const context = await browser.newContext({
     viewport: { width: 1920, height: 1080 },
     ignoreHTTPSErrors: true,
@@ -45,10 +46,11 @@ export default async function(){
     acceptDownloads: false,
     ignoreDefaultArgs: ['--disable-notifications']
   });
-  const page = await context.newPage()
+  const page = await context.newPage();
 
   try{
     const startTime = Date.now();
+    // Navega até a página inicial e espera o carregamento completo
     const response = await page.goto("https://hom-frontend.leilaovip.com.br/", {
       timeout: 60000,
       waitUntil: 'networkidle'
@@ -67,16 +69,18 @@ export default async function(){
 
     const loadTime = Date.now() - startTime;
 
+    // Realiza verificações na resposta e na página
     const checks = check(response, {
-      'status is 200': () => response.status() ===200,
+      'status is 200': () => response.status() === 200,
       'page loads under 25s': () => loadTime < 25000,
-      'title is present': () => page.title() !== '',
-    })
+    }) && check(await page.title(), {
+      'title is present': (title) => title !== '',
+    });
 
+    // Coleta métricas de navegação
     const navigationTimings = await page.evaluate(()=>{
       const [navigationEntry] = performance.getEntriesByType('navigation');
       if (!navigationEntry) return { domContentLoaded: null, load: null};
-
       return {
         domContentLoaded: navigationEntry.domContentLoadedEventEnd,
         load: navigationEntry.loadEventEnd
@@ -94,6 +98,9 @@ export default async function(){
     console.error(`Erro no teste: ${error}`);
     errorRate.add(true);
   } finally {
+    // Pequeno delay para garantir processamento dos eventos
+    await sleep(0.1);
+    // Fecha a página e o contexto do navegador
     await page.close();
     await context.close();
   }

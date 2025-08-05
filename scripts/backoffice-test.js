@@ -1,25 +1,25 @@
+import { SharedArray } from 'k6/data';
 import http from 'k6/http';
 import { check, sleep, group } from 'k6';
+import { BASE_URL, LOGIN_URL, OPERADOR_URL, OBTER_DADOS_URL, baseHeaders, EVENTO_ID, ANUNCIO_ID } from '../config/backoffice.js';
 import { Rate, Trend } from 'k6/metrics';
 import exec from 'k6/execution';
+
+// Carregar usuários do CSV
+const users = new SharedArray('users', function () {
+  return open('../data/users.csv')
+    .split('\n')
+    .slice(1) // Remove o cabeçalho
+    .filter(Boolean)
+    .map(line => {
+      const [username, password] = line.replace('\r', '').split(',');
+      return { username, password };
+    });
+});
 
 // Métricas personalizadas
 const errorRate = new Rate('errors');
 const updateTrend = new Trend('operador_update_duration');
-
-// URLs base
-const BASE_URL = 'https://hom-backoffice.vipleiloes.com.br';
-const LOGIN_URL = `${BASE_URL}/conta/entrar`;
-const OPERADOR_URL = `${BASE_URL}/operador`;
-const OBTER_DADOS_URL = `${BASE_URL}/operador?handler=ObterDadosTela`;
-
-// IDs para teste (extraídos do curl)
-const EVENTO_ID = '6d58c82d-f049-4574-ae7a-b29501784967';
-const ANUNCIO_ID = 'd6f27f95-58be-478e-abc4-b2950178493d';
-
-// Credenciais
-const USERNAME = 'up-admin@vipleiloes.com.br';
-const PASSWORD = 'Vip123456';
 
 // Configuração do teste
 export const options = {
@@ -29,7 +29,7 @@ export const options = {
     { duration: '2m', target: 240 }, 
     { duration: '2m', target: 400 },
     { duration: '1m', target: 0 }  
-  ],
+  ],    // duração total do teste,
   thresholds: {
     http_req_duration: ['p(95)<5000'],        // 95% das requisições abaixo de 5s
     http_req_failed: ['rate<0.1'],            // Taxa de falha menor que 10%
@@ -39,16 +39,6 @@ export const options = {
   setupTimeout: '60s'
 };
 
-// Headers compartilhados para todas as requisições
-const baseHeaders = {
-  'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:138.0) Gecko/20100101 Firefox/138.0',
-  'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-  'Accept-Language': 'pt-BR,en-US;q=0.7,en;q=0.3',
-  'Accept-Encoding': 'gzip, deflate, br, zstd',
-  'DNT': '1',
-  'Connection': 'keep-alive',
-  'Upgrade-Insecure-Requests': '1'
-};
 
 // Login inicial e obtenção dos cookies
 export function setup() {
@@ -101,6 +91,11 @@ export function setup() {
   
   // Passo 2: Realizar o login
   console.log('Passo 2: Enviando credenciais...');
+  // Selecionar usuário para esta execução
+  const user = users[exec.vu.idInTest % users.length];
+  const USERNAME = user.username;
+  const PASSWORD = user.password;
+
   const loginPayload = {
     'Login.Login': USERNAME,
     'Login.Senha': PASSWORD,
