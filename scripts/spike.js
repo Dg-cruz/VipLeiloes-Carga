@@ -17,13 +17,31 @@ export let options = {
   tags: { test_type: 'spike' }
 };
 
-export default function () {
-  const res = http.get(baseURL);
+export default function() {
+  const url = baseURL + '/path/to/resource';
+  const res = http.get(url);
+
+  const resultado = {
+    url: url,
+    requisicoesFalhas: 0,
+    requisicoesSucesso: 0,
+  };
 
   check(res, {
     'status é 200': (r) => r.status === 200,
     'tempo de resposta < 4s': (r) => r.timings.duration < 4000,
   });
 
-  sleep(1); // pausa entre requisições
+  if (res.status === 200) {
+    resultado.requisicoesSucesso++;
+  } else {
+    resultado.requisicoesFalhas++;
+  }
+
+  console.log('RESUMO DO TESTE:');
+  console.log(`URL testada: ${resultado.url}`);
+  console.log(`Requisições falhas: ${resultado.requisicoesFalhas}`);
+  console.log(`Requisições com sucesso: ${resultado.requisicoesSucesso}`);
+
+  return resultado;
 }
