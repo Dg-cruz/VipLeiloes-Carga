@@ -1,7 +1,7 @@
 import { SharedArray } from 'k6/data';
 import http from 'k6/http';
 import { check, sleep, group } from 'k6';
-import { BASE_URL, LOGIN_URL, OPERADOR_URL, OBTER_DADOS_URL, baseHeaders, EVENTO_ID, ANUNCIO_ID } from '../config/backoffice.js';
+import { BASE_URL, LOGIN_URL, OPERADOR_URL, OBTER_DADOS_URL, baseHeaders, EVENTO_ID, ANUNCIO_ID } from '../../config/backoffice.js';
 import { Rate, Trend } from 'k6/metrics';
 import exec from 'k6/execution';
 
