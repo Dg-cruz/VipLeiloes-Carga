@@ -4,7 +4,7 @@ import { Counter, Rate, Trend } from 'k6/metrics';
 const updateTrend_main = new Trend('update_request_duration_main');
 const updateTrend_second = new Trend('update_request_duration_second');
 import { htmlReport } from 'https://raw.githubusercontent.com/benc-uk/k6-reporter/main/dist/bundle.js';
-import { baseURL, detalhesURL } from '../config/evento_multiplo.js'; 
+import { BASE_URL, ATUALIZACAO_URL } from '../config/evento_multiplo.js'; 
 
 // Métricas por URL
 const mainSuccessCounter = new Counter('main_success_count');
@@ -30,7 +30,7 @@ export const options = {
  
 export default function () {
   // Requisição principal
-  const resMain = http.get(baseURL);
+  const resMain = http.get(ATUALIZACAO_URL);
   const mainSuccess = check(resMain, {
     'Main status é 200': function (r) { return r.status === 200; },
     'Main tempo < 4s': function (r) { return r.timings.duration < 4000; },

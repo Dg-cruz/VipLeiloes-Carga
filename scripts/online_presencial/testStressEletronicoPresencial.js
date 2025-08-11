@@ -3,7 +3,8 @@ import { check, sleep } from 'k6';
 import { Rate, Trend } from 'k6/metrics';
 const errorRate = new Rate('errors');
 const updateTrend = new Trend('update_request_duration');
-import { ATUALIZACAO_URL } from '../config/evento_online_presencial.js'; // importa as URLs do arquivo de configuração 
+import { ATUALIZACAO_URL } from '../../config/evento_online_presencial.js'; // importa as URLs do arquivo de configuração 
+
 export const options = {
   stages: [
   { duration: '2m', target: 1000 },

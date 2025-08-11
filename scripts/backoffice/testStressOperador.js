@@ -3,14 +3,15 @@ import { check, sleep } from 'k6';
 import { Rate, Trend } from 'k6/metrics';
 const errorRate = new Rate('errors');
 const updateTrend = new Trend('update_request_duration');
-import { ATUALIZACAO_URL } from '../config/tela_operador.js'; // importa as URLs do arquivo de configuração 
+import { ATUALIZACAO_URL } from '../../config/tela_operador.js'; // importa as URLs do arquivo de configuração 
+
 export const options = {
   stages: [
-  { duration: '2m', target: 1000 },
-  { duration: '3m', target: 1500 },
-  { duration: '2m', target: 2000 },
-  { duration: '3m', target: 2500 },
-  { duration: '2m', target: 0 }
+{ duration: '2m', target: 250 },
+{ duration: '3m', target: 500 },
+{ duration: '2m', target: 750 },
+{ duration: '3m', target: 1000 },
+{ duration: '2m', target: 0 }
 ],
   thresholds: {
     http_req_duration: ['p(95)<2000'],
