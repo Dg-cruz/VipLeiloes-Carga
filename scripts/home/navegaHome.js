@@ -1,7 +1,7 @@
 // Aumenta gradualmente o número de usuários para descobrir o ponto de quebra.
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { baseURL } from '../config/staging.js'; // importa a URL base da pasta config
+import { baseURL } from '../../config/staging.js'; // importa a URL base da pasta config
 
 export let options = {
   stages: [
