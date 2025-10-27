@@ -1,7 +1,7 @@
 // Verifica se o sistema básico está funcionando — execução curta, com poucos usuários.
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { baseURL } from '../config/staging.js'; // importa a URL base da pasta config
+import { baseURL } from '../../config/staging.js'; // importa a URL base da pasta config
 
 export let options = {
   vus: 1,

@@ -5,10 +5,10 @@ import { buscaURL } from '../../config/staging.js'; // importa a URL base da pas
 
 export let options = {
   stages: [
-      { duration: '2m', target: 1000 },
+      { duration: '2m', target: 500 },
+      { duration: '3m', target: 1000 },
+      { duration: '2m', target: 2000 },
       { duration: '3m', target: 2000 },
-      { duration: '2m', target: 2500 },
-      { duration: '3m', target: 2500 },
       { duration: '2m', target: 0 }
     ],
   thresholds: {

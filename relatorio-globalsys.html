@@ -1,0 +1,230 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório de Teste de Carga - GLOBALSYS</title>
+<style>
+  body { 
+    font-family: "Segoe UI", Roboto, sans-serif; 
+    background-color: #f8fafc; 
+    color: #1e293b; 
+    margin: 0; 
+    font-size: 16px; 
+    line-height: 1.5; 
+  }
+
+  header { 
+    background-color: #004aad; 
+    color: white; 
+    text-align: center; 
+    padding: 25px; 
+    font-size: 1.2em; 
+  }
+
+  header img { 
+    height: 60px; 
+    vertical-align: middle; 
+    margin-right: 15px; 
+  }
+
+  h1 { font-size: 1.8em; margin-bottom: 15px; }
+  h2 { font-size: 1.4em; margin-top: 30px; margin-bottom: 15px; }
+
+  .container { 
+    max-width: 1000px; 
+    margin: 30px auto; 
+    background: white; 
+    padding: 30px 40px; 
+    border-radius: 12px; 
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1); 
+  }
+
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin: 25px 0; 
+    font-size: 1em; 
+  }
+
+  th, td { 
+    border: 1px solid #e2e8f0; 
+    padding: 10px; 
+    text-align: left; 
+  }
+
+  th { background-color: #f1f5f9; font-weight: bold; }
+
+  .metric { font-weight: bold; color: #334155; }
+  .success { color: #16a34a; font-weight: bold; }
+  .fail { color: #dc2626; font-weight: bold; }
+
+  footer { 
+    text-align: center; 
+    font-size: 0.85em; 
+    color: #64748b; 
+    margin: 20px; 
+  }
+
+  .btn-export { 
+    background-color: #004aad; 
+    color: white; 
+    border: none; 
+    padding: 12px 20px; 
+    font-size: 1em; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    margin-top: 10px; 
+  }
+
+  .btn-export:hover { background-color: #2563eb; }
+
+  .summary { 
+    background-color: #e0f2fe; 
+    padding: 15px; 
+    border-left: 5px solid #004aad; 
+    border-radius: 5px; 
+    margin-bottom: 25px; 
+    font-size: 1em; 
+  }
+
+  .tag { 
+    display: inline-block; 
+    background-color: #004aad; 
+    color: white; 
+    padding: 6px 10px; 
+    border-radius: 4px; 
+    margin-right: 5px; 
+    font-size: 0.9em; 
+  }
+
+  /* Ajuste do gráfico para PDF */
+  #chart-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+  }
+
+  #chart {
+    width: 100% !important;
+    height: 250px !important; /* Altura menor para não estourar o PDF */
+  }
+</style>
+</head>
+<body>
+<header>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Banco_Bradesco_logo_%28horizontal%29.png" alt="Logo GLOBALSYS" onerror="this.style.display='none'">
+  <span><strong>Carbuy Bradesco - Relatório de Teste de Carga</strong></span>
+</header>
+
+<div class="container">
+  <h1>Resumo do Teste</h1>
+
+  <div class="summary">
+    <p><span class="tag">SPIKE</span></p>
+    <p><strong>Objetivo:</strong> Verifica como o sistema reage a picos instantâneos de tráfego.</p>
+    <p><strong>Aplicação:</strong> VIPLeilões - Ambiente Homologação</p>
+    <p><strong>URL Testada:</strong> https://up-bradesco-frontend2-hom.azurewebsites.net//evento/atualizacao?anuncioId=8ed0dca7-1ca5-488f-bf72-b37e010ed3ab</p>
+    <p><strong>Execução:</strong> 10/24/2025, 15:06:14</p>
+  </div>
+
+  <table>
+    <tr><th>Métrica</th><th>Valor</th></tr>
+    <tr><td class="metric">Usuários Virtuais (VUs)</td><td>2499</td></tr>
+    <tr><td class="metric">Duração Total</td><td>424.1 s</td></tr>
+    <tr><td class="metric">Total de Requisições</td><td>152564</td></tr>
+    <tr><td class="metric">Taxa de Sucesso</td><td class="success">100.00%</td></tr>
+    <tr><td class="metric">Tempo Médio de Resposta</td><td>154 ms</td></tr>
+    <tr><td class="metric">P(90)</td><td>162.25 ms</td></tr>
+    <tr><td class="metric">P(95)</td><td>169.91 ms</td></tr>
+  </table>
+
+  <h2>Validação de Thresholds</h2>
+  <table>
+    <tr><th>Métrica</th><th>Condição</th><th>Descrição</th><th>Status</th></tr>
+    
+              <tr>
+                <td>http_req_duration</td>
+                <td>p(95)<2500</td>
+                <td>Tempo de resposta das requisições HTTP. Mede quanto o servidor demora para responder. </td>
+                <td style="color:#16a34a;font-weight:bold;">✅ Atingido</td>
+              </tr>
+              <tr>
+                <td>http_req_duration</td>
+                <td>p(99)<4000</td>
+                <td>Tempo de resposta das requisições HTTP. Mede quanto o servidor demora para responder. </td>
+                <td style="color:#16a34a;font-weight:bold;">✅ Atingido</td>
+              </tr>
+              <tr>
+                <td>http_req_failed</td>
+                <td>rate<0.02</td>
+                <td>Taxa de requisições HTTP que falharam. Mede a confiabilidade do sistema. </td>
+                <td style="color:#16a34a;font-weight:bold;">✅ Atingido</td>
+              </tr>
+              <tr>
+                <td>checks</td>
+                <td>rate>0.97</td>
+                <td>Percentual de verificações internas do teste que passaram. Mede se as condições esperadas foram atendidas. </td>
+                <td style="color:#16a34a;font-weight:bold;">✅ Atingido</td>
+              </tr>
+  </table>
+
+  <h2>Distribuição de Latência</h2>
+  <div id="chart-container">
+    <canvas id="chart"></canvas>
+  </div>
+
+  <center>
+    <button class="btn-export" onclick="exportPDF()">📄 Exportar para PDF</button>
+  </center>
+</div>
+
+<footer>
+  Relatório gerado automaticamente por k6 para GLOBALSYS em 10/24/2025, 15:06:14
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script>
+  const chartData = [
+    0,
+    0,
+    162.25263,
+    169.91159000000002,
+    0
+  ];
+
+  const ctx = document.getElementById('chart');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['P(50)', 'P(75)', 'P(90)', 'P(95)', 'P(99)'],
+      datasets: [{
+        label: 'Tempo de Resposta (ms)',
+        data: chartData,
+        backgroundColor: '#004aad'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: 'Tempo (ms)' } }
+      }
+    }
+  });
+
+  function exportPDF() {
+    const element = document.body;
+    html2pdf().from(element).set({
+      margin: 0.3,
+      filename: 'relatorio-globalsys.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    }).save();
+  }
+</script>
+</body>
+</html>
