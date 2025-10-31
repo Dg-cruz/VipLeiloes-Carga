@@ -3,7 +3,7 @@ import { check, sleep } from 'k6';
 import { Rate, Trend } from 'k6/metrics';
 const errorRate = new Rate('errors');
 const updateTrend = new Trend('update_request_duration');
-import { ATUALIZACAO_URL } from '../../config/bradesco.js'; // importa as URLs do arquivo de configuração
+import { detalheAnuncioBradescoUrl } from '../../config/bradesco.js'; // importa as URLs do arquivo de configuração
 import { gerarRelatorioGlobalsys } from '../../modules/reporter-globalsys.js'; // importa a função de geração de relatório
 import { getThresholds } from '../../modules/thresholds-globalsys.js';
 
@@ -40,8 +40,8 @@ const params = {
   timeout: '20s'
 };
 export default function () {
-  let updateResponse = http.get(ATUALIZACAO_URL, params);
-  urlTestada = ATUALIZACAO_URL; // salva a URL na variável global
+  let updateResponse = http.get(detalheAnuncioBradescoUrl, params);
+  urlTestada = detalheAnuncioBradesco; // salva a URL na variável global
   
   if (updateResponse.status === 200 || updateResponse.status === 204) {
     updateTrend.add(updateResponse.timings.duration);
@@ -67,6 +67,6 @@ export default function () {
 }
 // Ao finalizar o teste, o k6 chama automaticamente essa função
 export function handleSummary(data) {
-  data.config = { url: ATUALIZACAO_URL };
+  data.config = { url: detalheAnuncioBradescoUrl };
   return gerarRelatorioGlobalsys(data, tipoTeste, descricao, thresholds);
 }

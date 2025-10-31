@@ -139,19 +139,42 @@ export function gerarRelatorioGlobalsys(data, tipoTeste = 'carga', descricaoTest
   <h1>Resumo do Teste</h1>
 
   <div class="summary">
-    <p><span class="tag">${tipoTeste.toUpperCase()}</span></p>
-    <p><strong>Objetivo:</strong> ${descricaoTeste || 'Avaliar o desempenho e estabilidade do sistema sob carga.'}</p>
-    <p><strong>Aplicação:</strong> VIPLeilões - Ambiente Homologação</p>
-    <p><strong>URL Testada:</strong> ${data?.config?.url || '-'}</p>
-    <p><strong>Execução:</strong> ${new Date().toLocaleString('pt-BR')}</p>
-  </div>
+  <p><span class="tag">${tipoTeste.toUpperCase()}</span></p>
+  <p><strong>Objetivo:</strong> ${descricaoTeste || 'Avaliar o desempenho e estabilidade do sistema sob carga.'}</p>
+  <p><strong>Aplicação:</strong> VIPLeilões - Ambiente Homologação</p>
+  <p><strong>URL Testada:</strong> ${data?.config?.url || '-'}</p>
+  <p><strong>Execução:</strong> ${
+    (() => {
+      const now = new Date();
+      return now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour12: false });
+    })()
+  }</p>
+</div>
 
   <table>
     <tr><th>Métrica</th><th>Valor</th></tr>
     <tr><td class="metric">Usuários Virtuais (VUs)</td><td>${safeGet(data, 'metrics.vus.values.max', 0)}</td></tr>
     <tr><td class="metric">Duração Total</td><td>${(data?.state?.testRunDurationMs / 1000 || 0).toFixed(1)} s</td></tr>
-    <tr><td class="metric">Total de Requisições</td><td>${safeGet(data, 'metrics.http_reqs.values.count', 0)}</td></tr>
-    <tr><td class="metric">Taxa de Sucesso</td><td class="success">${((1 - safeGet(data, 'metrics.http_req_failed.values.rate', 0)) * 100).toFixed(2)}%</td></tr>
+    <tr>
+      <td class="metric">Total de Requisições</td>
+      <td>${safeGet(data, 'metrics.http_reqs.values.count', 0)}</td>
+    </tr>
+    <tr>
+      <td class="metric">Requisições Falhas</td>
+      <td class="fail">${
+        (() => {
+          const totalReqs = Number(data?.metrics?.http_reqs?.values?.count ?? 0);
+          const failRate = Number(data?.metrics?.http_req_failed?.values?.rate ?? 0);
+          return Math.round(totalReqs * failRate);
+        })()
+      }</td>
+    </tr>
+    <tr>
+      <td class="metric">Taxa de Sucesso</td>
+      <td class="success">${(
+        (1 - Number(data?.metrics?.http_req_failed?.values?.rate ?? 0)) * 100
+      ).toFixed(2)}%</td>
+    </tr>
     <tr><td class="metric">Tempo Médio de Resposta</td><td>${safeGet(data, 'metrics.http_req_duration.values.avg', 0)} ms</td></tr>
     <tr><td class="metric">P(90)</td><td>${data?.metrics?.http_req_duration?.values?.["p(90)"]?.toFixed(2) ?? '-' } ms</td></tr>
     <tr><td class="metric">P(95)</td><td>${data?.metrics?.http_req_duration?.values?.["p(95)"]?.toFixed(2) ?? '-' } ms</td></tr>
